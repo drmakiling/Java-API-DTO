@@ -1,6 +1,6 @@
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.path.json.JsonPath;
-import com.jayway.restassured.response.Response;
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 import org.apache.commons.configuration.ConfigurationException;
 
 import java.io.FileInputStream;
@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 
 public class Customer {
     Properties prop=new Properties();
@@ -23,7 +23,7 @@ public class Customer {
         }
     }
     public String token;
-    public void callingLoginAPI() throws IOException,
+    public void callingsaveProfileAddressAPI() throws IOException,
             ConfigurationException, javax.naming.ConfigurationException {
         prop.load(file);
         RestAssured.baseURI = prop.getProperty("baseUrl");
@@ -31,11 +31,23 @@ public class Customer {
                 given()
                         .contentType("application/json")
                         .body(
-                                "{\"name\":\"string\",\n" +
-                                        " \"status\":\"Test\"}"
+                                "{\n" +
+                                        "  \"addr1\": \"123 Test Street\",\n" +
+                                        "  \"addr2\": \"Unit 7\",\n" +
+                                        "  \"addr3\": \"Test\",\n" +
+                                        "  \"addressType\": \"BUSINESS\",\n" +
+                                        "  \"city\": \"Redondo Beach\",\n" +
+                                        "  \"country\": \"USA\",\n" +
+                                        "  \"createdBy\": \"Test\",\n" +
+                                        "  \"id\": \"<<profileId>>\",\n" +
+                                        "  \"state\": \"CA\",\n" +
+                                        "  \"status\": \"Test\",\n" +
+                                        "  \"updatedBy\": \"Test\",\n" +
+                                        "  \"zipCode\": \"90278\"\n" +
+                                        "}"
                         ).
                         when()
-                        .post("/customer/api/v1/login").
+                        .post("/pii/api/address/ddad7ffe-dc65-4b04-bd3a-80086a701110").
                         then()
                         .assertThat().statusCode( 200 ).extract
                                 ().response();

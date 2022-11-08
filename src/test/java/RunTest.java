@@ -5,9 +5,9 @@ import java.io.IOException;
 
 public class RunTest {
     @Test()
-    public void login() throws IOException, ConfigurationException, javax.naming.ConfigurationException {
+    public void saveProfileAddress() throws IOException, ConfigurationException, javax.naming.ConfigurationException {
         Customer customer=new Customer();
-        customer.callingLoginAPI();
+        customer.callingsaveProfileAddressAPI();
     }
 }
 

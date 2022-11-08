@@ -10,17 +10,17 @@ sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
+	maven {
+		url "https://platform.test1.altruistnet.tech"
+	}
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.projectlombok:lombok:1.18.24'
 	implementation 'org.projectlombok:lombok:1.18.24'
-	implementation 'com.jayway.restassured:rest-assured:2.9.0'
-	implementation 'com.jayway.restassured:rest-assured-common:2.9.0'
-	implementation 'com.thegoate:restassured:0.15.17.202208262237'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation group: 'io.rest-assured', name: 'rest-assured-all', version: '5.2.0'
+	testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '4.3.3'
 	implementation group: 'commons-configuration', name: 'commons-configuration', version: '1.10'
 }
 
