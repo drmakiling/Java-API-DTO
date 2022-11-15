@@ -39,7 +39,7 @@ public class Customer {
                                         "  \"city\": \"Redondo Beach\",\n" +
                                         "  \"country\": \"USA\",\n" +
                                         "  \"createdBy\": \"Test\",\n" +
-                                        "  \"id\": \"<<profileId>>\",\n" +
+                                        "  \"id\": \"ddad7ffe-dc65-4b04-bd3a-80086a701110\",\n" +
                                         "  \"state\": \"CA\",\n" +
                                         "  \"status\": \"Test\",\n" +
                                         "  \"updatedBy\": \"Test\",\n" +
