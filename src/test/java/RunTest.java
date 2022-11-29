@@ -6,9 +6,9 @@ import java.io.IOException;
 
 public class RunTest {
     @Test()
-    public void AuthCall() throws IOException, ConfigurationException, javax.naming.ConfigurationException, JSONException {
+    public void saveProfileAddressAPI() throws IOException, ConfigurationException, javax.naming.ConfigurationException, JSONException {
         Customer customer=new Customer();
-        customer.callAuthCall();
+        customer.callingsaveProfileAddressAPI();
     }
 }
 

@@ -37,7 +37,7 @@ public class Customer {
         return jsessionIDCookie;
     }
 
-    public void callAuthCall() throws IOException, ConfigurationException, javax.naming.ConfigurationException, JSONException {
+    public String callAuthCall() throws IOException, ConfigurationException, javax.naming.ConfigurationException, JSONException {
         prop.load(file);
         RestAssured.baseURI = prop.getProperty("baseUrl");
         String res =
@@ -55,12 +55,15 @@ public class Customer {
                         .post("/idp/oauth/token")
                         .then().statusCode(200).extract().response().asString();;
 
+        JsonPath authPayload = new JsonPath(res);
+        String accessToken = authPayload.getString("access_token");
+        return accessToken;
+
     }
 
-
-
     public void callingsaveProfileAddressAPI() throws IOException,
-            ConfigurationException, javax.naming.ConfigurationException {
+            ConfigurationException, javax.naming.ConfigurationException, JSONException {
+        String accessToken = callAuthCall();
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
@@ -69,7 +72,8 @@ public class Customer {
                         .log()
                         .all()
                         .relaxedHTTPSValidation()
-                        .headers("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + accessToken)
+                        .header("Content-Type", "application/json")
                         .cookie(cookie)
                         .body(
                                 "{\n" +
@@ -88,7 +92,7 @@ public class Customer {
                                         "}"
                         ).
                         when()
-                        .post("/pii/api/address/ddad7ffe-dc65-4b04-bd3a-80086a701110").
+                        .post("/pii/api/profile-address/ddad7ffe-dc65-4b04-bd3a-80086a701110").
                         then()
                         .assertThat().statusCode( 200 ).extract
                                 ().response();
