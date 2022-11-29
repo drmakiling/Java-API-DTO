@@ -1,7 +1,6 @@
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
 import org.apache.commons.configuration.ConfigurationException;
 import org.json.JSONException;
 
@@ -61,13 +60,13 @@ public class Customer {
 
     }
 
-    public void callingsaveProfileAddressAPI() throws IOException,
+    public String callingsaveProfileAddressAPI() throws IOException,
             ConfigurationException, javax.naming.ConfigurationException, JSONException {
         String accessToken = callAuthCall();
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
-        Response res =
+        String res =
                 given()
                         .log()
                         .all()
@@ -94,11 +93,122 @@ public class Customer {
                         when()
                         .post("/pii/api/profile-address/ddad7ffe-dc65-4b04-bd3a-80086a701110").
                         then()
-                        .assertThat().statusCode( 200 ).extract
-                                ().response();
+                        .statusCode(200).extract().response().asString();
 
-        JsonPath jsonpath = res.jsonPath();
-        token = jsonpath.get("token");
-        Utils.setEnvVariable(token);
+       // JsonPath authPayload = new JsonPath(res);
+        return res;
     }
+    public String callinggetAddressByProfileIdAPI() throws IOException,
+            ConfigurationException, javax.naming.ConfigurationException, JSONException {
+        String accessToken = callAuthCall();
+        prop.load(file);
+        Cookie cookie = JSESSIONCOOKIE();
+        RestAssured.baseURI = prop.getProperty("baseUrl");
+        String res =
+                given()
+                        .log()
+                        .all()
+                        .relaxedHTTPSValidation()
+                        .header("Authorization", "Bearer " + accessToken)
+                        .header("Content-Type", "application/json")
+                        .cookie(cookie)
+                        .when()
+                        .get("/pii/api/address/ddad7ffe-dc65-4b04-bd3a-80086a701110").
+                        then()
+                        .statusCode(200).extract().response().asString();
+
+        return res;
+    }
+
+    public String callingupdateUserProfileAddressesAPI() throws IOException,
+            ConfigurationException, javax.naming.ConfigurationException, JSONException {
+        String accessToken = callAuthCall();
+        prop.load(file);
+        Cookie cookie = JSESSIONCOOKIE();
+        RestAssured.baseURI = prop.getProperty("baseUrl");
+        String res =
+                given()
+                        .log()
+                        .all()
+                        .relaxedHTTPSValidation()
+                        .header("Authorization", "Bearer " + accessToken)
+                        .header("Content-Type", "application/json")
+                        .cookie(cookie)
+                        .body(
+                                "{\n" +
+                                "  \"addr1\": \"123 Test Street\",\n" +
+                                "  \"addr2\": \"Unit 7\",\n" +
+                                "  \"addr3\": \"Test\",\n" +
+                                "  \"addressType\": \"BUSINESS\",\n" +
+                                "  \"city\": \"Redondo Beach\",\n" +
+                                "  \"country\": \"USA\",\n" +
+                                "  \"createdBy\": \"Test\",\n" +
+                                "  \"id\": \"ddad7ffe-dc65-4b04-bd3a-80086a701110\",\n" +
+                                "  \"state\": \"CA\",\n" +
+                                "  \"status\": \"Test\",\n" +
+                                "  \"updatedBy\": \"Test\",\n" +
+                                "  \"zipCode\": \"90278\"\n" +
+                                "}")
+                        .when()
+                        .put("/pii/api/user-profiles/ddad7ffe-dc65-4b04-bd3a-80086a701110/address").
+                        then()
+                        .statusCode(200).extract().response().asString();
+
+        return res;
+    }
+
+    public String callinggetsTheUserProfilesByUserIDsAPI() throws IOException,
+            ConfigurationException, javax.naming.ConfigurationException, JSONException {
+        String accessToken = callAuthCall();
+        prop.load(file);
+        Cookie cookie = JSESSIONCOOKIE();
+        RestAssured.baseURI = prop.getProperty("baseUrl");
+        String res =
+                given()
+                        .log()
+                        .all()
+                        .relaxedHTTPSValidation()
+                        .header("Authorization", "Bearer " + accessToken)
+                        .header("Content-Type", "application/json")
+                        .cookie(cookie)
+                        .body(
+                                "{\n" +
+                                        "  \"orgId\": \"0b2cb3f6-b357-4aff-a4e7-32d3771a3b8a\",\n" +
+                                        "  \"page\": 0,\n" +
+                                        "  \"size\": 0,\n" +
+                                        "  \"userIds\": [\n" +
+                                        "    \"ddad7ffe-dc65-4b04-bd3a-80086a701110\"\n" +
+                                        "  ]\n" +
+                                        "}"
+                        ).
+                        when()
+                        .post("/userAcct/api/v2/users/user-profiles/_search").
+                        then()
+                        .statusCode(200).extract().response().asString();
+
+        return res;
+    }
+
+    public String callinggetUserByUserProfileIdAPI() throws IOException,
+            ConfigurationException, javax.naming.ConfigurationException, JSONException {
+        String accessToken = callAuthCall();
+        prop.load(file);
+        Cookie cookie = JSESSIONCOOKIE();
+        RestAssured.baseURI = prop.getProperty("baseUrl");
+        String res =
+                given()
+                        .log()
+                        .all()
+                        .relaxedHTTPSValidation()
+                        .header("Authorization", "Bearer " + accessToken)
+                        .header("Content-Type", "application/json")
+                        .cookie(cookie)
+                        .when()
+                        .get("/userAcct/api/orgs/0b2cb3f6-b357-4aff-a4e7-32d3771a3b8a/user/by/profile/ddad7ffe-dc65-4b04-bd3a-80086a701110").
+                        then()
+                        .statusCode(200).extract().response().asString();
+
+        return res;
+    }
+
 }
