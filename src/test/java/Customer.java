@@ -3,6 +3,7 @@ import io.restassured.http.Cookie;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.configuration.ConfigurationException;
+import org.json.JSONException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,8 +27,6 @@ public class Customer {
     public String token;
     public String authorization = "Basic YWx0cnVpc3QtYXBwOmFsdHJ1aXN0LXNlY3JldA==";
     public String contentType = "application/x-www-form-urlencoded";
-    public String cookie = "JSESSIONID=71F0FC27EEDF66D625C0EB96AF6F525D; JSESSIONID=F918233017B2B8DE349C49EB0DA7C0A5";
-    Object authCookie = cookie;
 
 
     public static Cookie JSESSIONCOOKIE() {
@@ -38,27 +37,24 @@ public class Customer {
         return jsessionIDCookie;
     }
 
-    public void callAuthCall() {
-        Response response =
+    public void callAuthCall() throws IOException, ConfigurationException, javax.naming.ConfigurationException, JSONException {
+        prop.load(file);
+        RestAssured.baseURI = prop.getProperty("baseUrl");
+        String res =
                 given()
                         .log()
                         .all()
                         .relaxedHTTPSValidation()
                         .header("Authorization", authorization)
-                        .header("Bearer", token)
                         .header("Content-Type", contentType)
-                        .cookie((String) authCookie)
-                        .body(
-                                "{\n" +
-                                        "  \"grant_type\": \"password\",\n" +
-                                        "  \"username\": \"qateam+admin+oct12@altruist.com\",\n" +
-                                        "  \"password\": \"A!tru1st\",\n" +
-                                        "}"
-                        )
+                        .formParam("grant_type", "password")
+                        .formParam("username", "qateam+admin+oct12@altruist.com")
+                        .formParam("password", "A!tru1st")
+                        .cookie("JSESSIONID","71F0FC27EEDF66D625C0EB96AF6F525D", "F918233017B2B8DE349C49EB0DA7C0A5")
                         .when()
-                        .post("https://platform.test1.altruistnet.tech/idp/oauth/token")
-                        .then() .assertThat().statusCode( 200 ).extract
-                                ().response();
+                        .post("/idp/oauth/token")
+                        .then().statusCode(200).extract().response().asString();;
+
     }
 
 
