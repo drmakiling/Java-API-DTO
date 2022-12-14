@@ -1,6 +1,7 @@
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 import org.apache.commons.configuration.ConfigurationException;
 import org.json.JSONException;
 
@@ -26,6 +27,8 @@ public class Customer {
     public String token;
     public String authorization = "Basic YWx0cnVpc3QtYXBwOmFsdHJ1aXN0LXNlY3JldA==";
     public String contentType = "application/x-www-form-urlencoded";
+    private String username = "qateam+admin+oct12@altruist.com";
+    private String password = "A!tru1st";
 
 
     public static Cookie JSESSIONCOOKIE() {
@@ -47,8 +50,8 @@ public class Customer {
                         .header("Authorization", authorization)
                         .header("Content-Type", contentType)
                         .formParam("grant_type", "password")
-                        .formParam("username", "qateam+admin+oct12@altruist.com")
-                        .formParam("password", "A!tru1st")
+                        .formParam("username", username)
+                        .formParam("password", password)
                         .cookie("JSESSIONID","71F0FC27EEDF66D625C0EB96AF6F525D", "F918233017B2B8DE349C49EB0DA7C0A5")
                         .when()
                         .post("/idp/oauth/token")
@@ -60,40 +63,58 @@ public class Customer {
 
     }
 
-    public String callingsaveProfileAddressAPI() throws IOException,
+    public Response callingsaveProfileAddressAPI() throws IOException,
             ConfigurationException, javax.naming.ConfigurationException, JSONException {
         String accessToken = callAuthCall();
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
-        String res =
+        String addr1 = prop.getProperty("addr1");
+        String addr2 = prop.getProperty("addr2");
+        String addr3 = prop.getProperty("addr3");
+        String addressType = prop.getProperty("addressType");
+        String city = prop.getProperty("city");
+        String country = prop.getProperty("country");
+        String createdBy = prop.getProperty("createdBy");
+        String id = prop.getProperty("id");
+        String state = prop.getProperty("state");
+        String status = prop.getProperty("status");
+        String updatedBy = prop.getProperty("updatedBy");
+        String zipCode = prop.getProperty("zipCode");
+
+        String body = String.format(
+                "{\n" +
+                        "  \"addr1\": \"%s\",\n" +
+                        "  \"addr2\": \"%s\",\n" +
+                        "  \"addr3\": \"%s\",\n" +
+                        "  \"addressType\": \"%s\",\n" +
+                        "  \"city\": \"%s\",\n" +
+                        "  \"country\": \"%s\",\n" +
+                        "  \"createdBy\": \"%s\",\n" +
+                        "  \"id\": \"%s\",\n" +
+                        "  \"state\": \"%s\",\n" +
+                        "  \"status\": \"%s\",\n" +
+                        "  \"updatedBy\": \"%s\",\n" +
+                        "  \"zipCode\": \"%s\"\n" +
+                        "}", addr1, addr2, addr3, addressType, city, country, createdBy, id, state, status, updatedBy, zipCode);
+        Response res =
                 given()
                         .log()
                         .all()
                         .relaxedHTTPSValidation()
                         .header("Authorization", "Bearer " + accessToken)
                         .header("Content-Type", "application/json")
+                        .body(body)
                         .cookie(cookie)
-                        .body(
-                                "{\n" +
-                                        "  \"addr1\": \"123 Test Street\",\n" +
-                                        "  \"addr2\": \"Unit 7\",\n" +
-                                        "  \"addr3\": \"Test\",\n" +
-                                        "  \"addressType\": \"BUSINESS\",\n" +
-                                        "  \"city\": \"Redondo Beach\",\n" +
-                                        "  \"country\": \"USA\",\n" +
-                                        "  \"createdBy\": \"Test\",\n" +
-                                        "  \"id\": \"ddad7ffe-dc65-4b04-bd3a-80086a701110\",\n" +
-                                        "  \"state\": \"CA\",\n" +
-                                        "  \"status\": \"Test\",\n" +
-                                        "  \"updatedBy\": \"Test\",\n" +
-                                        "  \"zipCode\": \"90278\"\n" +
-                                        "}"
-                        ).
-                        when()
-                        .post("/pii/api/profile-address/ddad7ffe-dc65-4b04-bd3a-80086a701110").
-                        then()
-                        .statusCode(200).extract().response().asString();
+                        .when()
+                        .post("/pii/api/profile-address/" + id)
+                        .then()
+                        .log()
+                        .ifStatusCodeIsEqualTo(400)
+                        .extract().response();
+
+        // .statusCode(200)
+        //Assertions.assertEquals(200, res.statusCode());
 
        // JsonPath authPayload = new JsonPath(res);
         return res;
@@ -104,6 +125,7 @@ public class Customer {
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
+        String id = prop.getProperty("id");
         String res =
                 given()
                         .log()
@@ -113,7 +135,7 @@ public class Customer {
                         .header("Content-Type", "application/json")
                         .cookie(cookie)
                         .when()
-                        .get("/pii/api/address/ddad7ffe-dc65-4b04-bd3a-80086a701110").
+                        .get("/pii/api/address/" + id).
                         then()
                         .statusCode(200).extract().response().asString();
 
@@ -126,6 +148,34 @@ public class Customer {
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
+        String addr1 = prop.getProperty("addr1");
+        String addr2 = prop.getProperty("addr2");
+        String addr3 = prop.getProperty("addr3");
+        String addressType = prop.getProperty("addressType");
+        String city = prop.getProperty("city");
+        String country = prop.getProperty("country");
+        String createdBy = prop.getProperty("createdBy");
+        String id = prop.getProperty("id");
+        String state = prop.getProperty("state");
+        String status = prop.getProperty("status");
+        String updatedBy = prop.getProperty("updatedBy");
+        String zipCode = prop.getProperty("zipCode");
+
+        String body = String.format(
+                "{\n" +
+                        "  \"addr1\": \"%s\",\n" +
+                        "  \"addr2\": \"%s\",\n" +
+                        "  \"addr3\": \"%s\",\n" +
+                        "  \"addressType\": \"%s\",\n" +
+                        "  \"city\": \"%s\",\n" +
+                        "  \"country\": \"%s\",\n" +
+                        "  \"createdBy\": \"%s\",\n" +
+                        "  \"id\": \"%s\",\n" +
+                        "  \"state\": \"%s\",\n" +
+                        "  \"status\": \"%s\",\n" +
+                        "  \"updatedBy\": \"%s\",\n" +
+                        "  \"zipCode\": \"%s\"\n" +
+                        "}", addr1, addr2, addr3, addressType, city, country, createdBy, id, state, status, updatedBy, zipCode);
         String res =
                 given()
                         .log()
@@ -133,24 +183,10 @@ public class Customer {
                         .relaxedHTTPSValidation()
                         .header("Authorization", "Bearer " + accessToken)
                         .header("Content-Type", "application/json")
+                        .body(body)
                         .cookie(cookie)
-                        .body(
-                                "{\n" +
-                                "  \"addr1\": \"123 Test Street\",\n" +
-                                "  \"addr2\": \"Unit 7\",\n" +
-                                "  \"addr3\": \"Test\",\n" +
-                                "  \"addressType\": \"BUSINESS\",\n" +
-                                "  \"city\": \"Redondo Beach\",\n" +
-                                "  \"country\": \"USA\",\n" +
-                                "  \"createdBy\": \"Test\",\n" +
-                                "  \"id\": \"ddad7ffe-dc65-4b04-bd3a-80086a701110\",\n" +
-                                "  \"state\": \"CA\",\n" +
-                                "  \"status\": \"Test\",\n" +
-                                "  \"updatedBy\": \"Test\",\n" +
-                                "  \"zipCode\": \"90278\"\n" +
-                                "}")
                         .when()
-                        .put("/pii/api/user-profiles/ddad7ffe-dc65-4b04-bd3a-80086a701110/address").
+                        .put("/pii/api/user-profiles/" + id).
                         then()
                         .statusCode(200).extract().response().asString();
 
@@ -163,6 +199,10 @@ public class Customer {
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
+        String orgId = prop.getProperty("orgId");
+        String page = prop.getProperty("page");
+        String size = prop.getProperty("size");
+        String id = prop.getProperty("id");
         String res =
                 given()
                         .log()
@@ -170,18 +210,16 @@ public class Customer {
                         .relaxedHTTPSValidation()
                         .header("Authorization", "Bearer " + accessToken)
                         .header("Content-Type", "application/json")
-                        .cookie(cookie)
                         .body(
                                 "{\n" +
-                                        "  \"orgId\": \"0b2cb3f6-b357-4aff-a4e7-32d3771a3b8a\",\n" +
-                                        "  \"page\": 0,\n" +
-                                        "  \"size\": 0,\n" +
-                                        "  \"userIds\": [\n" +
-                                        "    \"ddad7ffe-dc65-4b04-bd3a-80086a701110\"\n" +
-                                        "  ]\n" +
+                                        " \"orgId\": " + orgId + ",\n" +
+                                        " \"page\": " + page + ",\n" +
+                                        " \"size\": " + size + ",\n" +
+                                        " \"userIds\": " + id + ",\n" +
                                         "}"
-                        ).
-                        when()
+                        )
+                        .cookie(cookie)
+                        .when()
                         .post("/userAcct/api/v2/users/user-profiles/_search").
                         then()
                         .statusCode(200).extract().response().asString();
@@ -195,6 +233,8 @@ public class Customer {
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
+        String orgId = prop.getProperty("orgId");
+        String id = prop.getProperty("id");
         String res =
                 given()
                         .log()
@@ -204,7 +244,7 @@ public class Customer {
                         .header("Content-Type", "application/json")
                         .cookie(cookie)
                         .when()
-                        .get("/userAcct/api/orgs/0b2cb3f6-b357-4aff-a4e7-32d3771a3b8a/user/by/profile/ddad7ffe-dc65-4b04-bd3a-80086a701110").
+                        .get("/userAcct/api/orgs/" + orgId + "/user/by/profile/" + id).
                         then()
                         .statusCode(200).extract().response().asString();
 
