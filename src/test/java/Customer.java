@@ -109,8 +109,6 @@ public class Customer {
                         .when()
                         .post("/pii/api/profile-address/" + id)
                         .then()
-                        .log()
-                        .ifStatusCodeIsEqualTo(400)
                         .extract().response();
 
         // .statusCode(200)
@@ -119,14 +117,14 @@ public class Customer {
        // JsonPath authPayload = new JsonPath(res);
         return res;
     }
-    public String callinggetAddressByProfileIdAPI() throws IOException,
+    public Response callinggetAddressByProfileIdAPI() throws IOException,
             ConfigurationException, javax.naming.ConfigurationException, JSONException {
         String accessToken = callAuthCall();
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
         String id = prop.getProperty("id");
-        String res =
+        Response res =
                 given()
                         .log()
                         .all()
@@ -137,12 +135,12 @@ public class Customer {
                         .when()
                         .get("/pii/api/address/" + id).
                         then()
-                        .statusCode(200).extract().response().asString();
+                        .extract().response();
 
         return res;
     }
 
-    public String callingupdateUserProfileAddressesAPI() throws IOException,
+    public Response callingupdateUserProfileAddressAPI() throws IOException,
             ConfigurationException, javax.naming.ConfigurationException, JSONException {
         String accessToken = callAuthCall();
         prop.load(file);
@@ -176,7 +174,7 @@ public class Customer {
                         "  \"updatedBy\": \"%s\",\n" +
                         "  \"zipCode\": \"%s\"\n" +
                         "}", addr1, addr2, addr3, addressType, city, country, createdBy, id, state, status, updatedBy, zipCode);
-        String res =
+        Response res =
                 given()
                         .log()
                         .all()
@@ -186,14 +184,14 @@ public class Customer {
                         .body(body)
                         .cookie(cookie)
                         .when()
-                        .put("/pii/api/user-profiles/" + id).
+                        .put("/pii/api/user-profiles/" + id + "/address").
                         then()
-                        .statusCode(200).extract().response().asString();
+                        .extract().response();
 
         return res;
     }
 
-    public String callinggetsTheUserProfilesByUserIDsAPI() throws IOException,
+    public Response callinggetsTheUserProfilesByUserIDsAPI() throws IOException,
             ConfigurationException, javax.naming.ConfigurationException, JSONException {
         String accessToken = callAuthCall();
         prop.load(file);
@@ -203,31 +201,33 @@ public class Customer {
         String page = prop.getProperty("page");
         String size = prop.getProperty("size");
         String id = prop.getProperty("id");
-        String res =
+
+        String body = String.format(
+                "{" +
+                        "\"orgId\": \"%s\",\n" +
+                        "\"page\": \"%s\",\n" +
+                        "\"size\": \"%s\",\n" +
+                        "\"userIds\": [\"%s\"]\n" +
+                "}", orgId, page, size, id);
+
+        Response res =
                 given()
                         .log()
                         .all()
                         .relaxedHTTPSValidation()
                         .header("Authorization", "Bearer " + accessToken)
                         .header("Content-Type", "application/json")
-                        .body(
-                                "{\n" +
-                                        " \"orgId\": " + orgId + ",\n" +
-                                        " \"page\": " + page + ",\n" +
-                                        " \"size\": " + size + ",\n" +
-                                        " \"userIds\": " + id + ",\n" +
-                                        "}"
-                        )
+                        .body(body)
                         .cookie(cookie)
                         .when()
                         .post("/userAcct/api/v2/users/user-profiles/_search").
                         then()
-                        .statusCode(200).extract().response().asString();
+                        .extract().response();
 
         return res;
     }
 
-    public String callinggetUserByUserProfileIdAPI() throws IOException,
+    public Response callinggetUserByUserProfileIdAPI() throws IOException,
             ConfigurationException, javax.naming.ConfigurationException, JSONException {
         String accessToken = callAuthCall();
         prop.load(file);
@@ -235,7 +235,7 @@ public class Customer {
         RestAssured.baseURI = prop.getProperty("baseUrl");
         String orgId = prop.getProperty("orgId");
         String id = prop.getProperty("id");
-        String res =
+        Response res =
                 given()
                         .log()
                         .all()
@@ -246,7 +246,7 @@ public class Customer {
                         .when()
                         .get("/userAcct/api/orgs/" + orgId + "/user/by/profile/" + id).
                         then()
-                        .statusCode(200).extract().response().asString();
+                        .extract().response();
 
         return res;
     }
