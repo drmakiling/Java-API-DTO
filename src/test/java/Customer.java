@@ -27,8 +27,6 @@ public class Customer {
     public String token;
     public String authorization = "Basic YWx0cnVpc3QtYXBwOmFsdHJ1aXN0LXNlY3JldA==";
     public String contentType = "application/x-www-form-urlencoded";
-    private String username = "qateam+admin+oct12@altruist.com";
-    private String password = "A!tru1st";
 
 
     public static Cookie JSESSIONCOOKIE() {
@@ -42,6 +40,8 @@ public class Customer {
     public String callAuthCall() throws IOException, ConfigurationException, javax.naming.ConfigurationException, JSONException {
         prop.load(file);
         RestAssured.baseURI = prop.getProperty("baseUrl");
+        String username = prop.getProperty("username");
+        String password = prop.getProperty("password");
         String res =
                 given()
                         .log()
@@ -55,7 +55,7 @@ public class Customer {
                         .cookie("JSESSIONID","71F0FC27EEDF66D625C0EB96AF6F525D", "F918233017B2B8DE349C49EB0DA7C0A5")
                         .when()
                         .post("/idp/oauth/token")
-                        .then().statusCode(200).extract().response().asString();;
+                        .then().statusCode(200).extract().response().asString();
 
         JsonPath authPayload = new JsonPath(res);
         String accessToken = authPayload.getString("access_token");
@@ -69,34 +69,34 @@ public class Customer {
         prop.load(file);
         Cookie cookie = JSESSIONCOOKIE();
         RestAssured.baseURI = prop.getProperty("baseUrl");
-        String addr1 = prop.getProperty("addr1");
-        String addr2 = prop.getProperty("addr2");
-        String addr3 = prop.getProperty("addr3");
-        String addressType = prop.getProperty("addressType");
-        String city = prop.getProperty("city");
-        String country = prop.getProperty("country");
-        String createdBy = prop.getProperty("createdBy");
+//        String addr1 = prop.getProperty("addr1");
+//        String addr2 = prop.getProperty("addr2");
+//        String addr3 = prop.getProperty("addr3");
+//        String addressType = prop.getProperty("addressType");
+//        String city = prop.getProperty("city");
+//        String country = prop.getProperty("country");
+//        String createdBy = prop.getProperty("createdBy");
         String id = prop.getProperty("id");
-        String state = prop.getProperty("state");
-        String status = prop.getProperty("status");
-        String updatedBy = prop.getProperty("updatedBy");
-        String zipCode = prop.getProperty("zipCode");
+//        String state = prop.getProperty("state");
+//        String status = prop.getProperty("status");
+//        String updatedBy = prop.getProperty("updatedBy");
+//        String zipCode = prop.getProperty("zipCode");
 
-        String body = String.format(
-                "{\n" +
-                        "  \"addr1\": \"%s\",\n" +
-                        "  \"addr2\": \"%s\",\n" +
-                        "  \"addr3\": \"%s\",\n" +
-                        "  \"addressType\": \"%s\",\n" +
-                        "  \"city\": \"%s\",\n" +
-                        "  \"country\": \"%s\",\n" +
-                        "  \"createdBy\": \"%s\",\n" +
-                        "  \"id\": \"%s\",\n" +
-                        "  \"state\": \"%s\",\n" +
-                        "  \"status\": \"%s\",\n" +
-                        "  \"updatedBy\": \"%s\",\n" +
-                        "  \"zipCode\": \"%s\"\n" +
-                        "}", addr1, addr2, addr3, addressType, city, country, createdBy, id, state, status, updatedBy, zipCode);
+//        String body = String.format(
+//                "{\n" +
+//                        "  \"addr1\": \"%s\",\n" +
+//                        "  \"addr2\": \"%s\",\n" +
+//                        "  \"addr3\": \"%s\",\n" +
+//                        "  \"addressType\": \"%s\",\n" +
+//                        "  \"city\": \"%s\",\n" +
+//                        "  \"country\": \"%s\",\n" +
+//                        "  \"createdBy\": \"%s\",\n" +
+//                        "  \"id\": \"%s\",\n" +
+//                        "  \"state\": \"%s\",\n" +
+//                        "  \"status\": \"%s\",\n" +
+//                        "  \"updatedBy\": \"%s\",\n" +
+//                        "  \"zipCode\": \"%s\"\n" +
+//                        "}", addr1, addr2, addr3, addressType, city, country, createdBy, id, state, status, updatedBy, zipCode);
         Response res =
                 given()
                         .log()
@@ -104,7 +104,7 @@ public class Customer {
                         .relaxedHTTPSValidation()
                         .header("Authorization", "Bearer " + accessToken)
                         .header("Content-Type", "application/json")
-                        .body(body)
+                        .body(callAPIs())
                         .cookie(cookie)
                         .when()
                         .post("/pii/api/profile-address/" + id)
@@ -116,6 +116,7 @@ public class Customer {
 
        // JsonPath authPayload = new JsonPath(res);
         return res;
+
     }
     public Response callinggetAddressByProfileIdAPI() throws IOException,
             ConfigurationException, javax.naming.ConfigurationException, JSONException {
@@ -181,7 +182,7 @@ public class Customer {
                         .relaxedHTTPSValidation()
                         .header("Authorization", "Bearer " + accessToken)
                         .header("Content-Type", "application/json")
-                        .body(body)
+                        .body(callAPIs())
                         .cookie(cookie)
                         .when()
                         .put("/pii/api/user-profiles/" + id + "/address").
@@ -249,6 +250,39 @@ public class Customer {
                         .extract().response();
 
         return res;
+    }
+
+    private String callAPIs()
+    {
+        String address1 = prop.getProperty("addr1");
+        String address2 = prop.getProperty("addr2");
+        String address3 = prop.getProperty("addr3");
+        String addressType = prop.getProperty("addressType");
+        String city = prop.getProperty("city");
+        String country = prop.getProperty("country");
+        String createdBy = prop.getProperty("createdBy");
+        String id = prop.getProperty("id");
+        String state = prop.getProperty("state");
+        String status = prop.getProperty("status");
+        String updatedBy = prop.getProperty("updatedBy");
+        String zipCode = prop.getProperty("zipCode");
+
+        String body = String.format(
+                "{\n" +
+                        "  \"addr1\": \"%s\",\n" +
+                        "  \"addr2\": \"%s\",\n" +
+                        "  \"addr3\": \"%s\",\n" +
+                        "  \"addressType\": \"%s\",\n" +
+                        "  \"city\": \"%s\",\n" +
+                        "  \"country\": \"%s\",\n" +
+                        "  \"createdBy\": \"%s\",\n" +
+                        "  \"id\": \"%s\",\n" +
+                        "  \"state\": \"%s\",\n" +
+                        "  \"status\": \"%s\",\n" +
+                        "  \"updatedBy\": \"%s\",\n" +
+                        "  \"zipCode\": \"%s\" \n" +
+                        "}", address1, address2, address3, addressType, city, country, createdBy, id, state, status, updatedBy, zipCode);
+        return body;
     }
 
 }

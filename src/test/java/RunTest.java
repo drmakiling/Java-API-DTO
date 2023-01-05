@@ -24,8 +24,28 @@ public class RunTest {
         Response res = customer.callingsaveProfileAddressAPI();
         int statusCode = res.getStatusCode();
 
-        Assert.assertEquals(statusCode, 200, "Correct status code is not returned");
+//        Assert.assertEquals(statusCode, 200, "Test has failed. Correct status code is not returned.");
 
+        try {
+            Assert.assertEquals(statusCode, 200);
+        }
+        catch (AssertionError e) {
+            System.out.print("Failure! Status Code: " + statusCode);
+            if (statusCode==400)
+                System.out.println(" Bad request!");
+            else if (statusCode==401)
+                System.out.println(" Unauthorized!");
+            else if (statusCode==403)
+                System.out.println(" Forbidden");
+            else if (statusCode==404)
+                System.out.println(" Not Found!");
+            else if (statusCode==500)
+                System.out.println(" Server Error!");
+            else
+                System.out.println(" Unknown error!");
+            throw e;
+        }
+        System.out.println("Successful run!");
 
         String addr1 = res.jsonPath().getString("address.addr1");
         Assert.assertEquals("123 Test Street", addr1);
@@ -45,6 +65,7 @@ public class RunTest {
         Assert.assertEquals("Test", updatedBy);
         String addressType = res.jsonPath().getString("address.addressType");
         Assert.assertEquals("BUSINESS", addressType);
+
     }
 // pii (get)
     @Test()
@@ -53,7 +74,28 @@ public class RunTest {
         Response res = customer.callinggetAddressByProfileIdAPI();
         int statusCode = res.getStatusCode();
 
-        Assert.assertEquals(statusCode, 200, "Correct status code is not returned");
+//        Assert.assertEquals(statusCode, 200, "Test has failed. Correct status code is not returned.");
+
+        try {
+            Assert.assertEquals(statusCode, 200);
+        }
+        catch (AssertionError e) {
+            System.out.print("Failure! Status Code: " + statusCode);
+            if (statusCode==400)
+                System.out.println(" Bad request!");
+            else if (statusCode==401)
+                System.out.println(" Unauthorized!");
+            else if (statusCode==403)
+                System.out.println(" Forbidden");
+            else if (statusCode==404)
+                System.out.println(" Not Found!");
+            else if (statusCode==500)
+                System.out.println(" Server Error!");
+            else
+                System.out.println(" Unknown error!");
+            throw e;
+        }
+        System.out.println("Successful run!");
 
         String id = res.jsonPath().getString("id");
         Assert.assertNotNull(id);
@@ -77,6 +119,8 @@ public class RunTest {
         Assert.assertNotNull(status);
         String addressType = res.jsonPath().getString("addressType");
         Assert.assertNotNull(addressType);
+
+
     }
 
     // pii (put)
@@ -87,7 +131,28 @@ public class RunTest {
 
         int statusCode = res.getStatusCode();
 
-        Assert.assertEquals(statusCode, 200, "Correct status code is not returned");
+//        Assert.assertEquals(statusCode, 200, "Test has failed. Correct status code is not returned.");
+
+        try {
+            Assert.assertEquals(statusCode, 200);
+        }
+        catch (AssertionError e) {
+            System.out.print("Failure! Status Code: " + statusCode);
+            if (statusCode==400)
+                System.out.println(" Bad request!");
+            else if (statusCode==401)
+                System.out.println(" Unauthorized!");
+            else if (statusCode==403)
+                System.out.println(" Forbidden");
+            else if (statusCode==404)
+                System.out.println(" Not Found!");
+            else if (statusCode==500)
+                System.out.println(" Server Error!");
+            else
+                System.out.println(" Unknown error!");
+            throw e;
+        }
+        System.out.println("Successful run!");
 
         String addr1 = res.jsonPath().getString("addr1");
         Assertions.assertEquals("123 Test Street", addr1);
@@ -123,6 +188,8 @@ public class RunTest {
         String status = res.jsonPath().getString("status");
         Assert.assertNotNull(status);
         Assert.assertNotNull(addressType);
+
+
     }
 
     //userAcct (post)
@@ -133,7 +200,28 @@ public class RunTest {
 
         int statusCode = res.getStatusCode();
 
-        Assert.assertEquals(statusCode, 200, "Correct status code is not returned");
+//        Assert.assertEquals(statusCode, 200, "Test has failed, Correct status code is not returned.");
+
+        try {
+            Assert.assertEquals(statusCode, 200);
+        }
+        catch (AssertionError e) {
+            System.out.print("Failure! Status Code: " + statusCode);
+            if (statusCode==400)
+                System.out.println(" Bad request!");
+            else if (statusCode==401)
+                System.out.println(" Unauthorized!");
+            else if (statusCode==403)
+                System.out.println(" Forbidden");
+            else if (statusCode==404)
+                System.out.println(" Not Found!");
+            else if (statusCode==500)
+                System.out.println(" Server Error!");
+            else
+                System.out.println(" Unknown error!");
+            throw e;
+        }
+        System.out.println("Successful run!");
 
         String page = res.jsonPath().getString("page");
         Assert.assertNotNull(page);
@@ -149,12 +237,32 @@ public class RunTest {
     //userAcct (get)
     @Test()
     public void getUserByUserProfileIdAPI() throws IOException, ConfigurationException, javax.naming.ConfigurationException, JSONException {
-        Customer customer=new Customer();
+        Customer customer = new Customer();
         Response res = customer.callinggetUserByUserProfileIdAPI();
 
         int statusCode = res.getStatusCode();
 
-        Assert.assertEquals(statusCode, 200, "Correct status code is not returned");
+//        Assert.assertEquals(statusCode, 200, "Test has failed. Correct status code is not returned.");
+
+        try {
+            Assert.assertEquals(statusCode, 200);
+        } catch (AssertionError e) {
+            System.out.print("Failure! Status Code: " + statusCode);
+            if (statusCode == 400)
+                System.out.println(" Bad request!");
+            else if (statusCode == 401)
+                System.out.println(" Unauthorized!");
+            else if (statusCode == 403)
+                System.out.println(" Forbidden");
+            else if (statusCode == 404)
+                System.out.println(" Not Found!");
+            else if (statusCode == 500)
+                System.out.println(" Server Error!");
+            else
+                System.out.println(" Unknown error!");
+            throw e;
+        }
+        System.out.println("Successful run!");
 
         String id = res.jsonPath().getString("id");
         Assert.assertNotNull(id);
@@ -174,8 +282,8 @@ public class RunTest {
         Assert.assertNotNull(status);
         String apexEnabled = res.jsonPath().getString("apexEnabled");
         Assert.assertNotNull(apexEnabled);
-    }
 
+    }
 }
 
 
