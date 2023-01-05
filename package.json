@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "allure-commandline": "^2.20.1"
+  },
+  "devDependencies": {
+    "@wdio/allure-reporter": "^8.0.13"
+  }
+}
